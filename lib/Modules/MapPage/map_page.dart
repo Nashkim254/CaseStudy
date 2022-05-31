@@ -1,6 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:tecnical_test/Helpers/alerts.dart';
+import 'package:tecnical_test/Modules/MapPage/controller.dart';
 
 class MapPage extends StatefulWidget {
   @override
@@ -8,44 +13,55 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
+  final cont = Get.put(MapPageController());
   GoogleMapController? mapController; //contrller for Google map
   PolylinePoints polylinePoints = PolylinePoints();
 
   String googleAPiKey = "AIzaSyBFlheim79TYkUacXtPq-x4TCHDZsk_Jlg";
-
+   LatLng startLocation = const LatLng(-17.3525, -145.51);
+   LatLng endLocation = const  LatLng(-26.6911, 141.0472);
   Set<Marker> markers = {}; //markers for google map
   Map<PolylineId, Polyline> polylines = {}; //polylines to show direction
 
-  LatLng startLocation = const LatLng(27.6683619, 85.3101895);
-  LatLng endLocation = const LatLng(27.6688312, 85.3077329);
-
   @override
   void initState() {
-    markers.add(Marker(
-      //add start location marker
-      markerId: MarkerId(startLocation.toString()),
-      position: startLocation, //position of marker
-      infoWindow: const InfoWindow(
-        //popup info
-        title: 'Starting Point ',
-        snippet: 'Start Marker',
-      ),
-      icon: BitmapDescriptor.defaultMarker, //Icon for Marker
-    ));
+    // cont.getAirlines(5, cont.token);
+   cont.getAirlines(5, cont.token);
+    
+    Future.delayed(const Duration(seconds: 5), () {
+// Here you can write your code
+ 
+    startLocation = cont.startLocation;
+    endLocation = cont.endLocation;
+printError(startLocation);
+    printError(endLocation);
+      markers.add(Marker(
+        //add start location marker
+        markerId: MarkerId(cont.startLocation.toString()),
+        position: cont.startLocation, //position of marker
+        infoWindow: const InfoWindow(
+          //popup info
+          title: 'Origin ',
+          snippet: 'Origin Marker',
+        ),
+        icon: BitmapDescriptor.defaultMarker, //Icon for Marker
+      ));
 
-    markers.add(Marker(
-      //add distination location marker
-      markerId: MarkerId(endLocation.toString()),
-      position: endLocation, //position of marker
-      infoWindow: const InfoWindow(
-        //popup info
-        title: 'Destination Point ',
-        snippet: 'Destination Marker',
-      ),
-      icon: BitmapDescriptor.defaultMarker, //Icon for Marker
-    ));
+      markers.add(Marker(
+        //add distination location marker
+        markerId: MarkerId(cont.endLocation.toString()),
+        position: cont.endLocation, //position of marker
+        infoWindow: const InfoWindow(
+          //popup info
+          title: 'Destination Point ',
+          snippet: 'Destination Marker',
+        ),
+        icon: BitmapDescriptor.defaultMarker, //Icon for Marker
+      ));
 
-    getDirections(); //fetch direction polylines from Google API
+      getDirections();
+    });
+//fetch direction polylines from Google API
 
     super.initState();
   }
@@ -55,8 +71,8 @@ class _MapPageState extends State<MapPage> {
 
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
       googleAPiKey,
-      PointLatLng(startLocation.latitude, startLocation.longitude),
-      PointLatLng(endLocation.latitude, endLocation.longitude),
+      PointLatLng(cont.startLocation.latitude, cont.startLocation.longitude),
+      PointLatLng(cont.endLocation.latitude, cont.endLocation.longitude),
       travelMode: TravelMode.driving,
     );
 
@@ -74,7 +90,7 @@ class _MapPageState extends State<MapPage> {
     PolylineId id = const PolylineId("poly");
     Polyline polyline = Polyline(
       polylineId: id,
-      color: Colors.deepPurpleAccent,
+      color: Colors.teal,
       points: polylineCoordinates,
       width: 8,
     );
@@ -84,29 +100,35 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Route Driection in Google Map"),
-        backgroundColor: Colors.deepPurpleAccent,
-      ),
-      body: GoogleMap(
-        //Map widget from google_maps_flutter package
-        zoomGesturesEnabled: true, //enable Zoom in, out on map
-        initialCameraPosition: CameraPosition(
-          //innital position in map
-          target: startLocation, //initial position
-          zoom: 16.0, //initial zoom level
+    return Obx(() {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text("Route Driection in Google Map"),
+          backgroundColor: Colors.teal,
         ),
-        markers: markers, //markers to show on map
-        polylines: Set<Polyline>.of(polylines.values), //polylines
-        mapType: MapType.normal, //map type
-        onMapCreated: (controller) {
-          //method called when map is created
-          setState(() {
-            mapController = controller;
-          });
-        },
-      ),
-    );
+        body: cont.isLoading.value == true
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : GoogleMap(
+                //Map widget from google_maps_flutter package
+                zoomGesturesEnabled: true, //enable Zoom in, out on map
+                initialCameraPosition: CameraPosition(
+                  //innital position in map
+                  target: cont.startLocation, //initial position
+                  zoom: 2.0, //initial zoom level
+                ),
+                markers: markers, //markers to show on map
+                polylines: Set<Polyline>.of(polylines.values), //polylines
+                mapType: MapType.normal, //map type
+                onMapCreated: (controller) {
+                  //method called when map is created
+                  setState(() {
+                    mapController = controller;
+                  });
+                },
+              ),
+      );
+    });
   }
 }

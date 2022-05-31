@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tecnical_test/Modules/MapPage/map_page.dart';
+import 'package:tecnical_test/Modules/SplashScreen/view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return  GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MapPage(),
+      home: SplashScreenView(),
     );
   }
 }
