@@ -44,6 +44,7 @@ class _SplashScreenView extends State<SplashScreenView> {
                 width: 150,
                 child: Icon(Icons.location_on,color: Colors.red,size: 100,)),
             ),
+           const Text("Case Study",style: TextStyle(color: Colors.white,fontSize: 40),)
           ],
         )),
       ),

@@ -103,7 +103,7 @@ printError(startLocation);
     return Obx(() {
       return Scaffold(
         appBar: AppBar(
-          title: const Text("Route Driection in Google Map"),
+          title: const Text("Directions and Map"),
           backgroundColor: Colors.teal,
         ),
         body: cont.isLoading.value == true
