@@ -8,7 +8,7 @@ class MapPageController extends GetxController {
   //an observable boolean isLoading
   var isLoading = true.obs;
   //token to authorize api requests to lufthansa
-  String token = "b8wjxp2cwx85pgjrdnr3hyk7";
+  String token = "j6k39zut9yx7266zsjrq6xup";
   var originLat = 0.0.obs;
   var originLng = 0.0.obs;
   var destLng = 0.0.obs;
@@ -17,7 +17,7 @@ class MapPageController extends GetxController {
   var endLocation;
   // LatLng startLocation = const LatLng(27668.3619, 85.3101895);
   //Method to fetch all airlines info
- Future  getAirlines(int limit, String token) async {
+  Future getAirlines(int limit, String token) async {
     isLoading(true);
     ResponseModel response = await getAirports(limit, token);
 

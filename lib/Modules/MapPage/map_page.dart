@@ -17,24 +17,27 @@ class _MapPageState extends State<MapPage> {
   GoogleMapController? mapController; //contrller for Google map
   PolylinePoints polylinePoints = PolylinePoints();
 
+//google API key for maps and directions
   String googleAPiKey = "AIzaSyBFlheim79TYkUacXtPq-x4TCHDZsk_Jlg";
-   LatLng startLocation = const LatLng(-17.3525, -145.51);
-   LatLng endLocation = const  LatLng(-26.6911, 141.0472);
+
+  //These are the origin and destination airport variables that would be assigned once api call is done
+  late LatLng startLocation;
+  late LatLng endLocation;
   Set<Marker> markers = {}; //markers for google map
   Map<PolylineId, Polyline> polylines = {}; //polylines to show direction
 
   @override
   void initState() {
     // cont.getAirlines(5, cont.token);
-   cont.getAirlines(5, cont.token);
-    
+    cont.getAirlines(5, cont.token);
+
     Future.delayed(const Duration(seconds: 5), () {
 // Here you can write your code
- 
-    startLocation = cont.startLocation;
-    endLocation = cont.endLocation;
-printError(startLocation);
-    printError(endLocation);
+
+      startLocation = cont.startLocation;
+      endLocation = cont.endLocation;
+      printError(startLocation);
+      printError(endLocation);
       markers.add(Marker(
         //add start location marker
         markerId: MarkerId(cont.startLocation.toString()),
